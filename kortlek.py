@@ -1,38 +1,45 @@
 #!/usr/bin/env python3 
 
 import random
-import math
 print("hej")
 def create_deck():
+    value = {}
     deck = []
+    jokera = create_card(1,0,deck)
+    jokerb = create_card(2,0,deck)
     for v in range(1,14):
-        for c in range(1,5):
+        for c in range(1,3):
             deck.append((v, c))
-    return(deck)
+            value = define_cards(deck)
+    return deck, value
 
-def get_value(card):
-    value = dict(ace=1,two=2,three=3,four=4,five=5,six=6,seven=7,eight=8,nine=9,ten=10,knight=11,queen=12,king=13)
-    string = card.split('_')
-    return value.get(string.pop(0))
-
-def get_suit(card):
-    suit = dict(hearts=1,spades=2,diamonds=3,clubs=4)
-    string = card.split('_')
-    return suit.get(string.pop(2))
+def create_card(v,c,deck):
+    deck.append((v,c))
 
 def display_card(card):
     print(str(get_value(card)) + " of " + card.split('_').pop(2))
 
 def shuffle_deck(deck):
-    deck = create_deck()
-    for x in range(300):
-        num  = random.randint(0,51)
-        deck.append(deck.pop(num))
+    random.shuffle(deck)
     print(deck)
-    for x in range(26):
+    for x in range(int(len(deck) / 2)):
         deck.append(deck.pop(0))
     print(deck)
 
-def move_card(old, new):
-    deck = create_deck()
-    return deck.insert(new, (deck.pop(old)))
+def move_card(old, new, deck):
+    deck.insert(new, (deck.pop(old)))
+    print(deck)
+
+def define_cards(deck):
+    deck.sort(key=lambda tup: tup[1])
+    value = {}
+    for x in range(len(deck)):
+        if deck[x][1] == 0:
+            value[deck[x]] = 27
+        else:
+            value[deck[x]] = x + -1
+        
+    return value
+
+def remove_card(pos, deck):
+    deck.pop(pos)
