@@ -74,10 +74,10 @@ def solitaire_keystream(length, deck, value):
             deck.insert(len(deck) - 2, deck.pop(0)) #lägger översta kortet näst längst ner
             
     
-        print(deck[0]) #debug
+        print(key) #debug
         if value[deck[0]] == 27: #ifall en joker är längst upp så börjar vi om loopen igen
             pass
         else:
-            key += string.ascii_uppercase[value[deck[0]]] #lägger till bokstav från A-Z beroende på värdet av första kortet i deck
+            key += string.ascii_uppercase[value[deck[0]] - 1] #lägger till bokstav från A-Z beroende på värdet av första kortet i deck
 
     return key
