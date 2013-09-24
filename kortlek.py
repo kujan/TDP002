@@ -24,12 +24,12 @@ def shuffle_deck(deck):
         deck.append(deck.pop(0))
 
 def move_card(old, new, deck):
-    print(old)
     if deck[old] == (1,0):
         if old == 27:
              deck.insert(1,(deck.pop(old)))
         else:
-            deck.insert(new (deck.pop(old)))
+            
+            deck.insert(new, (deck.pop(old)))
     elif deck[old] == (2,0):
         if old == 27:
             deck.insert(2, (deck.pop(old)))
@@ -39,7 +39,6 @@ def move_card(old, new, deck):
             deck.insert(new, (deck.pop(old)))
     else:
         deck.insert(new, (deck.pop(old)))
-    print(deck)
 def define_cards(deck):
     deck.sort(key=lambda tup: tup[1])
     value = {}
@@ -55,5 +54,17 @@ def remove_card(pos, deck):
     deck.pop(pos)
 
 
-def solitaire_keystream(msg):
-    move_card(deck.index((1,0)), deck.index((1,0)) + 1,deck)
+def solitaire_keystream(msg, deck):
+    move_card(deck.index((1,0)), deck.index((1,0)) + 1, deck)
+    move_card(deck.index((2,0)), deck.index((2,0)) + 2, deck)
+
+
+    joker1 = min(deck.index((1,0)),deck.index((2,0)))
+    joker2 = max(deck.index((1,0)),deck.index((2,0)))
+
+    A = deck[:joker1]
+    B = deck[joker1:joker2 + 1]
+    C = deck[joker2+1:]
+    print(C, B, A)
+    deck = C + B + A
+    print(deck)
