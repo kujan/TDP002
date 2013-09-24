@@ -1,5 +1,5 @@
 #!/usr/bin/env python3 
-
+import string
 import random
 def create_deck():
     value = {}
@@ -10,6 +10,7 @@ def create_deck():
         for c in range(1,3):
             deck.append((v, c))
             value = define_cards(deck)
+    shuffle_deck(deck)
     return deck, value
 
 def create_card(v,c,deck):
@@ -53,18 +54,30 @@ def define_cards(deck):
 def remove_card(pos, deck):
     deck.pop(pos)
 
+def solitaire_keystream(length, deck, value):
+    key = ""
+    while (len(key) != length):
+        move_card(deck.index((1,0)), deck.index((1,0)) + 1, deck)
+        move_card(deck.index((2,0)), deck.index((2,0)) + 2, deck)
 
-def solitaire_keystream(msg, deck):
-    move_card(deck.index((1,0)), deck.index((1,0)) + 1, deck)
-    move_card(deck.index((2,0)), deck.index((2,0)) + 2, deck)
 
+        joker1 = min(deck.index((1,0)),deck.index((2,0)))
+        joker2 = max(deck.index((1,0)),deck.index((2,0)))
 
-    joker1 = min(deck.index((1,0)),deck.index((2,0)))
-    joker2 = max(deck.index((1,0)),deck.index((2,0)))
+        A = deck[:joker1]
+        B = deck[joker1:joker2 + 1]
+        C = deck[joker2+1:]
 
-    A = deck[:joker1]
-    B = deck[joker1:joker2 + 1]
-    C = deck[joker2+1:]
-    print(C, B, A)
-    deck = C + B + A
-    print(deck)
+        deck = C + B + A
+    
+        for i in range(value[deck[len(deck) - 1]]): #loopar från i till värdet av sista kortet
+            deck.insert(len(deck) - 2, deck.pop(0)) #lägger översta kortet näst längst ner
+            
+    
+        print(deck[0]) #debug
+        if value[deck[0]] == 27: #ifall en joker är längst upp så börjar vi om loopen igen
+            pass
+        else:
+            key += string.ascii_uppercase[value[deck[0]]] #lägger till bokstav från A-Z beroende på värdet av första kortet i deck
+
+    return key
