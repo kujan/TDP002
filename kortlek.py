@@ -1,7 +1,6 @@
 #!/usr/bin/env python3 
 
 import random
-print("hej")
 def create_deck():
     value = {}
     deck = []
@@ -21,15 +20,26 @@ def display_card(card):
 
 def shuffle_deck(deck):
     random.shuffle(deck)
-    print(deck)
     for x in range(int(len(deck) / 2)):
         deck.append(deck.pop(0))
-    print(deck)
 
 def move_card(old, new, deck):
-    deck.insert(new, (deck.pop(old)))
+    print(old)
+    if deck[old] == (1,0):
+        if old == 27:
+             deck.insert(1,(deck.pop(old)))
+        else:
+            deck.insert(new (deck.pop(old)))
+    elif deck[old] == (2,0):
+        if old == 27:
+            deck.insert(2, (deck.pop(old)))
+        elif old == 26:
+            deck.insert(1, (deck.pop(old)))
+        else:
+            deck.insert(new, (deck.pop(old)))
+    else:
+        deck.insert(new, (deck.pop(old)))
     print(deck)
-
 def define_cards(deck):
     deck.sort(key=lambda tup: tup[1])
     value = {}
@@ -43,3 +53,7 @@ def define_cards(deck):
 
 def remove_card(pos, deck):
     deck.pop(pos)
+
+
+def solitaire_keystream(msg):
+    move_card(deck.index((1,0)), deck.index((1,0)) + 1,deck)
