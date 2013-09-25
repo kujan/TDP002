@@ -1,6 +1,7 @@
 #!/usr/bin/env python3 
 import string
 import random
+import re
 def create_deck():
     value = {}
     deck = []
@@ -81,3 +82,10 @@ def solitaire_keystream(length, deck, value):
             key += string.ascii_uppercase[value[deck[0]] - 1] #lägger till bokstav från A-Z beroende på värdet av första kortet i deck
 
     return key
+
+#def solitaire_encrypt(msg, deck):
+#   msg = msg.upper()
+#    match = re.search('[^A-Z]', msg)
+#    if match:
+#        print("JA!")
+    
