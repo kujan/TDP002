@@ -2,6 +2,7 @@
 import string
 import random
 import re
+import copy
 def create_deck():
     value = {}
     deck = []
@@ -56,12 +57,13 @@ def remove_card(pos, deck):
     deck.pop(pos)
 
 def solitaire_keystream(length, deck, value):
+    temp_deck = copy.deepcopy(deck)
     key = ""
-    temp_deck = deck
+
     while (len(key) != length):
         move_card(temp_deck.index((1,0)), temp_deck.index((1,0)) + 1, temp_deck)
         move_card(temp_deck.index((2,0)), temp_deck.index((2,0)) + 2, temp_deck)
-
+        
 
         joker1 = min(temp_deck.index((1,0)),temp_deck.index((2,0)))
         joker2 = max(temp_deck.index((1,0)),temp_deck.index((2,0)))
@@ -69,9 +71,9 @@ def solitaire_keystream(length, deck, value):
         A = temp_deck[:joker1]
         B = temp_deck[joker1:joker2 + 1]
         C = temp_deck[joker2+1:]
-
+       # print(A,B,C)
         temp_deck = C + B + A
-    
+       # print(temp_deck)
         for i in range(value[temp_deck[len(temp_deck) - 1]]): #loopar från i till värdet av sista kortet
             temp_deck.insert(len(temp_deck) - 2, temp_deck.pop(0)) #lägger översta kortet näst längst ner
             
@@ -127,13 +129,33 @@ def solitaire_encrypt(msg, deck, value):
     #print(key_list)
     return ''.join(result_list)
 
-def solitaire_decrypt(msg, deck):
+def solitaire_decrypt(msg, deck, value):
+    msg = msg.upper()
     charvalue = {}
     msg_list = []
+    key_list = []
+    temp_list = []
+    result_list = []
+    numbervalue = {}
     for i in string.ascii_uppercase: 
         charvalue[i] = string.ascii_uppercase.index(i) + 1 #skapar dict för att konvertera, behöver en funktion för detta
-    
     for i in msg:
         msg_list.append(charvalue[i])
-    print(msg_list)
+    key = solitaire_keystream(len(msg), deck, value)
 
+    for i in key:
+        key_list.append(charvalue[i])
+    
+    for i in range(len(key)):
+        number = msg_list[i] - key_list[i] #subtraherar bokstäverna
+        if number < 0:
+            number = number + 26
+        temp_list.append(number)
+
+    for i in range(1,27):
+        numbervalue[i] = string.ascii_uppercase[i - 1]
+
+    for i in temp_list:
+        result_list.append(numbervalue[i])
+
+    return ''.join(result_list)
