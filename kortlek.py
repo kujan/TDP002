@@ -57,35 +57,83 @@ def remove_card(pos, deck):
 
 def solitaire_keystream(length, deck, value):
     key = ""
+    temp_deck = deck
     while (len(key) != length):
-        move_card(deck.index((1,0)), deck.index((1,0)) + 1, deck)
-        move_card(deck.index((2,0)), deck.index((2,0)) + 2, deck)
+        move_card(temp_deck.index((1,0)), temp_deck.index((1,0)) + 1, temp_deck)
+        move_card(temp_deck.index((2,0)), temp_deck.index((2,0)) + 2, temp_deck)
 
 
-        joker1 = min(deck.index((1,0)),deck.index((2,0)))
-        joker2 = max(deck.index((1,0)),deck.index((2,0)))
+        joker1 = min(temp_deck.index((1,0)),temp_deck.index((2,0)))
+        joker2 = max(temp_deck.index((1,0)),temp_deck.index((2,0)))
 
-        A = deck[:joker1]
-        B = deck[joker1:joker2 + 1]
-        C = deck[joker2+1:]
+        A = temp_deck[:joker1]
+        B = temp_deck[joker1:joker2 + 1]
+        C = temp_deck[joker2+1:]
 
-        deck = C + B + A
+        temp_deck = C + B + A
     
-        for i in range(value[deck[len(deck) - 1]]): #loopar från i till värdet av sista kortet
-            deck.insert(len(deck) - 2, deck.pop(0)) #lägger översta kortet näst längst ner
+        for i in range(value[temp_deck[len(temp_deck) - 1]]): #loopar från i till värdet av sista kortet
+            temp_deck.insert(len(temp_deck) - 2, temp_deck.pop(0)) #lägger översta kortet näst längst ner
             
-    
-        print(key) #debug
-        if value[deck[0]] == 27: #ifall en joker är längst upp så börjar vi om loopen igen
+        if value[temp_deck[0]] == 27: #ifall en joker är längst upp så börjar vi om loopen igen
             pass
         else:
-            key += string.ascii_uppercase[value[deck[0]] - 1] #lägger till bokstav från A-Z beroende på värdet av första kortet i deck
+            key += string.ascii_uppercase[value[temp_deck[0]] - 1] #lägger till bokstav från A-Z beroende på värdet av första kortet i deck
 
     return key
-
-#def solitaire_encrypt(msg, deck):
-#   msg = msg.upper()
-#    match = re.search('[^A-Z]', msg)
-#    if match:
-#        print("JA!")
     
+def solitaire_encrypt(msg, deck, value):
+    charvalue = {}
+    numbervalue = {}
+    msg_list = []
+    key_list = []
+    temp_list = []
+    result_list = []
+    msg = msg.upper()
+    regexp = re.compile('[A-Z]') #tar endast ut tecken A-Z
+    match = regexp.findall(msg) #kollar tecken för tecken och lägger in i en lista
+    if match:
+        msg = ''.join(match) # gör om listan till en sträng, onödigt?
+    else:
+        print("nope")
+    key = solitaire_keystream(len(match), deck, value) # genererar nyckel med samma längd som meddelandet
+    
+    for i in string.ascii_uppercase: #loopar A-Z
+        charvalue[i] = string.ascii_uppercase.index(i) + 1 #skapar en dict för att konvertera från bokstäver till siffror
+    
+    for i in msg:
+        msg_list.append(charvalue[i]) #konverterar A-Z till siffror från meddelandet
+
+    for i in key:
+        key_list.append(charvalue[i]) #konverterar A-Z till sifrror från nyckeln
+    
+    for i in range(len(key)):
+        number = msg_list[i] + key_list[i] #adderar de konverterade bokstäverna från key & msg
+        if number > 26: #om resultatet är över 26 så tar vi bort 26
+            number = number - 26
+        temp_list.append(number) 
+    
+    for i in range(1,27):
+        numbervalue[i] = string.ascii_uppercase[i - 1] #skapar en dict för att konvertera från siffror till bokstäver
+    
+    for i in temp_list:
+        result_list.append(numbervalue[i]) #konverterar summan från föregående loop till bokstäver igen
+    #print(result_list)
+    #print(temp_list)
+    #print(numbervalue)
+    #print(msg)
+    #print(msg_list)
+    #print(key)
+    #print(key_list)
+    return ''.join(result_list)
+
+def solitaire_decrypt(msg, deck):
+    charvalue = {}
+    msg_list = []
+    for i in string.ascii_uppercase: 
+        charvalue[i] = string.ascii_uppercase.index(i) + 1 #skapar dict för att konvertera, behöver en funktion för detta
+    
+    for i in msg:
+        msg_list.append(charvalue[i])
+    print(msg_list)
+
