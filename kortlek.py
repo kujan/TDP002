@@ -74,13 +74,13 @@ def solitaire_keystream(length, deck, value):
        # print(A,B,C)
         temp_deck = C + B + A
        # print(temp_deck)
-        for i in range(value[temp_deck[len(temp_deck) - 1]]): #loopar från i till värdet av sista kortet
-            temp_deck.insert(len(temp_deck) - 2, temp_deck.pop(0)) #lägger översta kortet näst längst ner
+        for i in range(value[temp_deck[len(temp_deck) - 1]]): #loopar fran i till vardet av sista kortet
+            temp_deck.insert(len(temp_deck) - 2, temp_deck.pop(0)) #lagger oversta kortet nast langst ner
             
-        if value[temp_deck[0]] == 27: #ifall en joker är längst upp så börjar vi om loopen igen
+        if value[temp_deck[0]] == 27: #ifall en joker ar langst upp sa borjar vi om loopen igen
             pass
         else:
-            key += string.ascii_uppercase[value[temp_deck[0]] - 1] #lägger till bokstav från A-Z beroende på värdet av första kortet i deck
+            key += string.ascii_uppercase[value[temp_deck[0]] - 1] #lagger till bokstav fran A-Z beroende pa vardet av farsta kortet i deck
 
     return key
     
@@ -93,33 +93,33 @@ def solitaire_encrypt(msg, deck, value):
     result_list = []
     msg = msg.upper()
     regexp = re.compile('[A-Z]') #tar endast ut tecken A-Z
-    match = regexp.findall(msg) #kollar tecken för tecken och lägger in i en lista
+    match = regexp.findall(msg) #kollar tecken for tecken och lagger in i en lista
     if match:
-        msg = ''.join(match) # gör om listan till en sträng, onödigt?
+        msg = ''.join(match) # gor om listan till en strang, onodigt?
     else:
         print("nope")
-    key = solitaire_keystream(len(match), deck, value) # genererar nyckel med samma längd som meddelandet
+    key = solitaire_keystream(len(match), deck, value) # genererar nyckel med samma langd som meddelandet
     
     for i in string.ascii_uppercase: #loopar A-Z
-        charvalue[i] = string.ascii_uppercase.index(i) + 1 #skapar en dict för att konvertera från bokstäver till siffror
+        charvalue[i] = string.ascii_uppercase.index(i) + 1 #skapar en dict for att konvertera fran bokstaver till siffror
     
     for i in msg:
-        msg_list.append(charvalue[i]) #konverterar A-Z till siffror från meddelandet
+        msg_list.append(charvalue[i]) #konverterar A-Z till siffror fran meddelandet
 
     for i in key:
-        key_list.append(charvalue[i]) #konverterar A-Z till sifrror från nyckeln
+        key_list.append(charvalue[i]) #konverterar A-Z till sifrror fran nyckeln
     
     for i in range(len(key)):
-        number = msg_list[i] + key_list[i] #adderar de konverterade bokstäverna från key & msg
-        if number > 26: #om resultatet är över 26 så tar vi bort 26
+        number = msg_list[i] + key_list[i] #adderar de konverterade bokstaverna fran key & msg
+        if number > 26: #om resultatet ar over 26 sa tar vi bort 26
             number = number - 26
         temp_list.append(number) 
     
     for i in range(1,27):
-        numbervalue[i] = string.ascii_uppercase[i - 1] #skapar en dict för att konvertera från siffror till bokstäver
+        numbervalue[i] = string.ascii_uppercase[i - 1] #skapar en dict for att konvertera fran siffror till bokstaver
     
     for i in temp_list:
-        result_list.append(numbervalue[i]) #konverterar summan från föregående loop till bokstäver igen
+        result_list.append(numbervalue[i]) #konverterar summan fran foregaende loop till bokstaver igen
     #print(result_list)
     #print(temp_list)
     #print(numbervalue)
@@ -127,7 +127,9 @@ def solitaire_encrypt(msg, deck, value):
     #print(msg_list)
     #print(key)
     #print(key_list)
-    return ''.join(result_list)
+    result_list = ''.join(result_list)
+    print("Krypterat meddelande: " + result_list)
+    return solitaire_decrypt(str(result_list),deck,value)
 
 def solitaire_decrypt(msg, deck, value):
     msg = msg.upper()
@@ -138,7 +140,7 @@ def solitaire_decrypt(msg, deck, value):
     result_list = []
     numbervalue = {}
     for i in string.ascii_uppercase: 
-        charvalue[i] = string.ascii_uppercase.index(i) + 1 #skapar dict för att konvertera, behöver en funktion för detta
+        charvalue[i] = string.ascii_uppercase.index(i) + 1 #skapar dict for att konvertera, behover en funktion for detta
     for i in msg:
         msg_list.append(charvalue[i])
     key = solitaire_keystream(len(msg), deck, value)
@@ -147,7 +149,7 @@ def solitaire_decrypt(msg, deck, value):
         key_list.append(charvalue[i])
     
     for i in range(len(key)):
-        number = msg_list[i] - key_list[i] #subtraherar bokstäverna
+        number = msg_list[i] - key_list[i] #subtraherar bokstaverna
         if number < 0:
             number = number + 26
         temp_list.append(number)
@@ -157,5 +159,5 @@ def solitaire_decrypt(msg, deck, value):
 
     for i in temp_list:
         result_list.append(numbervalue[i])
-
-    return ''.join(result_list)
+    print("Dekrypterat meddelande: " + ''.join(result_list))
+    return 
