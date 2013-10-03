@@ -24,14 +24,12 @@ def soko_display(level_list):
                         print_row += items[element[0]] #lägger till värdet i strängen
                         x = x + 1 #X bestämmer vilken position i raden vi befinner oss på just nu
                         doLoop = False #hittar vi ett element som ska skrivas ut på denna plats, så avslutar vi loopen
-                        
-                       # print(x)
+                                        
                     else:
+                        x = x + 1
+                        #doLoop = True         
+                        print_row += " "#hittas inget element så skriver vi ut mellanslag tills vi hittar ett
                         
-                        doLoop = False
-                            
-                    #    print_row += " "#hittas inget element så skriver vi ut mellanslag tills vi hittar ett
-                    #    
             print(print_row)
         else:
             print("")
@@ -43,7 +41,7 @@ def load_level(file):
     items = {'#': 'wall', 'o': 'crate', '@': 'player', '.': 'storing_space', '*': 'crate_in_position', '+': 'player_in_storage'," ": 'floor'}
     for y_index,row in enumerate(level):
         for x_index,char in enumerate(row):
-            if char not in "\n":
+            if char not in " \n":
                 row_list = [items[char], x_index ,y_index]
                 level_list.append(row_list)
     return level_list
@@ -56,12 +54,12 @@ def player_can_move(move, level):
     #player = 11, 8
     if move == 'up':
         check_object = find_item_in_coord(player[1],player[2] - 1, level)
-        print(check_object)
         if check_object != 'wall' and crate_can_move(move,level):
             level.pop(level.index(player))
             player = [player[0],player[1],player[2] - 1]
             level.append(player)
-        
+        else:
+            print("False move!")       
             
     elif move == 'down':
         check_object = find_item_in_coord(player[1],player[2] + 1, level)
@@ -69,19 +67,21 @@ def player_can_move(move, level):
             level.pop(level.index(player))
             player = [player[0],player[1],player[2] + 1]
             level.append(player)
-
+        else:
+            print("False move!")
     elif move == 'left':
         check_object = find_item_in_coord(player[1] - 1,player[2], level)
         if check_object != 'wall' and crate_can_move(move,level):
             level.pop(level.index(player))
             player = [player[0],player[1] - 1,player[2]]
             level.append(player)
-
+        else:
+            print("False move!")
     elif move == 'right':
         check_object = find_item_in_coord(player[1] + 1,player[2], level)
         if check_object != 'wall' and crate_can_move(move,level):
             level.pop(level.index(player))
-            player = [player[0],player[1] - 1,player[2]]
+            player = [player[0],player[1] + 1,player[2]]
             level.append(player)
 
         else:
@@ -94,26 +94,27 @@ def check_move(move, steps, level):
     #player = 11, 8
     if move == 'up':
         check_object = find_item_in_coord(player[1],player[2] - steps, level)
-        if check_object not in "crate wall":
-            return True
+        print(player[1],player[2] - steps)
+        if check_object not in 'wallcrate':
+            return check_object
 
     elif move == 'down':
         check_object = find_item_in_coord(player[1],player[2] + steps, level)
-        if check_object not in "crate wall":
-            return True        
+        if check_object not in 'wallcrate':
+            return check_object      
 
     elif move == 'left':
         check_object = find_item_in_coord(player[1] - steps,player[2], level)
-        if check_object not in "crate wall":
-            return True    
-
+        print(steps)
+        if check_object not in 'wallcrate':
+            return check_object
     elif move == 'right':
         check_object = find_item_in_coord(player[1] + steps,player[2], level)
-        if check_object not in "crate wall":
-            return True    
+        if check_object not in 'wallcrate':
+            return check_object
     else:
         print("False move")
-
+        return False
 def crate_can_move(move, level):
     #hitta player
     #koll vad som finns på move
@@ -122,19 +123,28 @@ def crate_can_move(move, level):
     player = find_player(level)
     find_move = check_move(move, 1, level)
     if find_move == 'crate':
+        print("BALLE")
         find_move = check_move(move,2, level)
-        if find_move:
+        if find_move == True:
+            print("BALOBAS")
             return True
+
         else:
             return False
-    return True
+    else:
+        return True
+    
+
 
 def find_item_in_coord(x,y, level):
     for element in level:
         if element[1] == x and element[2] == y:
             print(element[0])
             return element[0]
-
+        elif element[0] == None:
+            return ""
+        else:
+            return 'ERROR'
         
 def find_player(level):
     for element in level:
